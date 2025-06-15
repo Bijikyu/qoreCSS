@@ -13,14 +13,14 @@ The framework includes sophisticated performance measurement tools that validate
    npm install  # Installs all required dependencies
    ```
 
-2. **Execute Performance Tests**: 
+2. **Execute Performance Tests**:
    ```bash
-   # Run with default concurrency (5 requests)
+   # Run with default request count (5 requests)
    node scripts/performance.js
-   
-   # Run with custom concurrency (1-1000 requests)
+
+   # Run with custom request count (1-1000 requests)
    node scripts/performance.js 25
-   
+
    # Generate JSON output for CI/CD integration
    node scripts/performance.js 25 --json
    ```

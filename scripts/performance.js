@@ -211,17 +211,17 @@ async function run(){
   if(jsonFlag){ args.splice(args.indexOf(`--json`),1); } // Removes flag from numeric arguments
   
   /*
-   * CONCURRENCY CONFIGURATION WITH SAFETY LIMITS
-   * Rationale: Configurable concurrency enables testing different load patterns
+   * REQUEST COUNT CONFIGURATION WITH SAFETY LIMITS
+   * Rationale: Configurable request count enables testing different load patterns
    * while safety limits prevent accidental DDoS of CDN endpoints.
    * Default of 5 provides meaningful load testing without being aggressive.
    * Range validation prevents resource exhaustion from invalid values.
    */
-  let concurrency = parseInt(args[0],10); 
-  if(Number.isNaN(concurrency) || concurrency < 1 || concurrency > 1000){ concurrency = 5; } // Validates range 1-1000 with sensible default
-  concurrency = Math.max(1, concurrency); // Ensures at least one request (prevents divide by zero)
-  if(concurrency > MAX_CONCURRENCY){ console.log(`run concurrency exceeds ${MAX_CONCURRENCY}`); concurrency = MAX_CONCURRENCY; } // Safety cap uses env derived limit
-  console.log(`run concurrency set to ${concurrency}`); // Logs final concurrency setting
+  let requestCount = parseInt(args[0],10); // parses CLI arg as integer
+  if(Number.isNaN(requestCount) || requestCount < 1 || requestCount > 1000){ requestCount = 5; } // validates range with sensible default
+  requestCount = Math.max(1, requestCount); // ensures at least one request to avoid divide by zero
+  if(requestCount > MAX_CONCURRENCY){ console.log(`run requestCount exceeds ${MAX_CONCURRENCY}`); requestCount = MAX_CONCURRENCY; } // caps by env derived limit
+  console.log(`run requestCount set to ${requestCount}`); // logs final request count setting
   
   /*
    * TEST EXECUTION ACROSS ALL ENDPOINTS
@@ -232,7 +232,7 @@ async function run(){
   const results = {}; // stores results for optional JSON output
   let firstAvg; // captures first URL average for function return
   for(const url of urls){
-   const avg = await measureUrl(url, concurrency); // Executes performance test
+   const avg = await measureUrl(url, requestCount); // Executes performance test
    console.log(`Average for ${url}: ${avg.toFixed(2)}ms`); // Displays human-readable results
    if(firstAvg === undefined){ firstAvg = avg; } // records first result for return value
    if(jsonFlag){ results[url] = avg; } // Stores results for JSON output

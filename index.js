@@ -157,7 +157,8 @@ function injectCss(){ // handles runtime stylesheet loading logic
 
   const cssFile = `core.5c7df4d0.min.css`; // placeholder replaced during build
   const links = Array.from(document.head.querySelectorAll('link')); // grabs all current link elements to manage updates
-  links.forEach(l => { const file = (l.getAttribute('href') || '').split('/').pop(); if(file.startsWith('core.') && !file.includes(cssFile)){ l.remove(); console.log(`injectCss removed outdated ${l.href}`); } }); // removes old hashed links that don't match the new hash
+  const coreRegex = /^core(?:\.[a-f0-9]{8})?\.min\.css$/; // targets only hashed or fallback core filenames for cleanup
+  links.forEach(l => { const file = (l.getAttribute('href') || '').split('/').pop(); if(coreRegex.test(file) && !file.includes(cssFile)){ l.remove(); console.log(`injectCss removed outdated ${l.href}`); } }); // removes old hashed links that don't match the new hash while leaving unrelated files
   const existing = links.find(l => l.href.includes(cssFile) || l.href.includes('qore.css')); // searches for prior injection by hashed or fallback name after cleanup
   if(!existing){ // avoids duplicate injection when link already present
    const link = document.createElement('link'); // creates stylesheet link element

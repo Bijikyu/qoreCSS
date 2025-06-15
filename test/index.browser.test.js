@@ -176,4 +176,15 @@ describe('browser injection', {concurrency:false}, () => {
     assert.ok(links[0].href.includes('core.abcdef12.min.css')); // ensure new hash present
     fs.unlinkSync(tmpPath); // cleanup temporary script file
   });
+
+  it('keeps unrelated core files intact', () => {
+    const extra = document.createElement('link'); // prepares additional stylesheet for removal test
+    extra.href = 'core.extra.css'; // unrelated file should not match regex in injectCss
+    extra.rel = 'stylesheet'; // standard rel value for CSS link
+    document.head.appendChild(extra); // injects unrelated stylesheet before loading module
+    require('../index.js'); // triggers injectCss which should leave extra file untouched
+    const links = Array.from(document.head.querySelectorAll('link')); // collects all link elements after injection
+    assert.strictEqual(links.length, 2); // expect new core hash plus existing extra file
+    assert.ok(links.some(l => l.href.endsWith('core.extra.css'))); // verifies extra file still present after injection
+  });
 });

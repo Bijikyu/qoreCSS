@@ -20,7 +20,12 @@
  * 
  * This approach maximizes compatibility across JavaScript ecosystems while
  * providing an intuitive API for developers familiar with modern npm packages.
- */
+*/
+
+let errLog; // holds qerrors function or console fallback
+try { // attempts qerrors for structured logging like logger utility
+  errLog = require('qerrors'); // assigns qerrors when available for consistency
+} catch { errLog = null; } // absence handled later to preserve console output
 
 /*
  * MAIN EXPORT OBJECT CONSTRUCTION
@@ -38,7 +43,10 @@ function safeResolve(file){ // resolves path when require is present or falls ba
    console.log(`safeResolve is returning ${resolved}`); // logs resolved path
    return resolved; // returns resolved path when in Node
   }
- } catch(err){ console.error('safeResolve failed:', err.message); } // logs unexpected errors
+ } catch(err){
+  if(errLog){ errLog(err,'safeResolve failed',{file}); } // structured logging when qerrors present
+  else { console.error('safeResolve failed:', err.message); } // fallback replicating old behavior
+ } // logs unexpected errors
  console.log(`safeResolve is returning ${file}`); // logs fallback path for browsers
  return file; // returns plain path when require unavailable
 }

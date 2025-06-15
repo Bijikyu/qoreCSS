@@ -121,6 +121,14 @@ describe('updateHtml', () => {
     assert.strictEqual(hash, '12345678'); // ensure returned hash unchanged from build.hash file
   });
 
+  it('replaces core.min.css with hashed file', async () => {
+    fs.writeFileSync(path.join(tmpDir, 'index.html'), '<link href="core.min.css">'); // setup html with non-hashed css reference
+    const hash = await updateHtml(); // execute update to test core.min.css replacement
+    const updated = fs.readFileSync(path.join(tmpDir, 'index.html'), 'utf8'); // read updated html for assertion
+    assert.ok(updated.includes('core.12345678.min.css')); // ensure core.min.css updated to hashed filename
+    assert.strictEqual(hash, '12345678'); // verify returned hash unchanged from build.hash file
+  });
+
   /*
    * MIXED CSS REFERENCES VALIDATION
    *

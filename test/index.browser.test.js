@@ -129,6 +129,15 @@ describe('browser injection', {concurrency:false}, () => {
     assert.ok(link.href.startsWith('https://cdn.example.com/assets/')); // verifies base path from script src
   });
 
+  it('handles script src with query string', () => {
+    const script = document.createElement('script'); // creates script element with query
+    script.src = 'https://cdn.example.com/assets/index.js?version=1'; // src includes query to test pathname parsing
+    document.body.appendChild(script); // adds script to DOM for lookup
+    require('../index.js'); // loads module to trigger injection
+    const link = document.querySelector('link'); // retrieves injected link
+    assert.ok(link.href.startsWith('https://cdn.example.com/assets/')); // verifies base path ignoring query string
+  });
+
   it('uses data-qorecss attribute when provided', () => {
     const script = document.createElement('script'); // creates attribute-based script
     script.src = 'https://cdn.example.com/data/script.js'; // src unrelated to index.js

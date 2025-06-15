@@ -143,12 +143,16 @@ function injectCss(){ // handles runtime stylesheet loading logic
   let scriptEl = document.currentScript; // uses current script element when available
   if(!scriptEl){ // falls back to iterating all script tags when currentScript missing
    const scripts = Array.from(document.getElementsByTagName('script')); // gathers all script elements for manual search
-   scriptEl = scripts.find(s=>s.src && s.src.toLowerCase().endsWith('index.js')); // finds script with src ending index.js ignoring case
+   scriptEl = scripts.find(s=>{ // searches for matching script by pathname
+    try{ // protects against invalid URLs in script tags
+     return new URL(s.src, document.baseURI).pathname.toLowerCase().endsWith('index.js'); // case-insensitive compare on parsed pathname
+    }catch{return false;} // ignores scripts with bad URLs
+   });
   }
   if(!scriptEl){ scriptEl = document.querySelector('[data-qorecss]'); } // detects custom attribute for flexible inclusion
   const scriptSrc = scriptEl && scriptEl.src ? scriptEl.src : ''; // avoids errors when element or src missing
-
-  const basePath = scriptSrc ? scriptSrc.slice(0, scriptSrc.lastIndexOf('/') + 1) : document.baseURI.slice(0, document.baseURI.lastIndexOf('/') + 1); // removes filename and keeps trailing slash when using document.baseURI
+  const scriptUrl = new URL(scriptSrc || document.baseURI, document.baseURI); // parses src relative to document base
+  const basePath = scriptUrl.href.slice(0, scriptUrl.href.lastIndexOf('/') + 1); // uses parsed URL to strip filename reliably
   console.log(`injectCss basePath ${basePath}`); // logs resolved base path for debugging
 
   const cssFile = `core.5c7df4d0.min.css`; // placeholder replaced during build

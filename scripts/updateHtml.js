@@ -77,10 +77,10 @@ async function updateHtml(){
   
   /*
    * CSS HASH REPLACEMENT
-   * Rationale: Single regex matches both qore.css and existing hashed filenames.
+   * Rationale: Single regex now also matches core.min.css to update legacy templates.
    * Global flag (g) ensures all references update in one pass for consistency.
    */
-  let updated = html.replace(/(?:qore\.css|core\.[a-f0-9]{8}\.min\.css)/g, `core.${hash}.min.css`); // replaces any css reference with current hashed filename
+  let updated = html.replace(/(?:qore\.css|core\.min\.css|core\.[a-f0-9]{8}\.min\.css)/g, `core.${hash}.min.css`); // ensures every CSS reference uses hashed filename
   
   /*
    * CDN PLACEHOLDER SUBSTITUTION

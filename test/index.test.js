@@ -106,4 +106,16 @@ describe('index module', {concurrency:false}, () => {
   it('serverSide flag is true in Node environment', () => {
     assert.strictEqual(mod.serverSide, true); // verifies Node.js environment detection is working
   });
+
+  it('loads without qerrors module', () => {
+    const Module = require('module'); // access module system for interception
+    const orig = Module.prototype.require; // capture current require handler
+    Module.prototype.require = function(id){ // override to simulate missing qerrors
+      if(id==='qerrors'){ const err=new Error("Cannot find module 'qerrors'"); err.code='MODULE_NOT_FOUND'; throw err; }
+      return orig.call(this,id); // defer other modules to original
+    };
+    delete require.cache[require.resolve('../index.js')]; // clear cache for reload with override
+    assert.doesNotThrow(() => require('../index.js')); // ensures safeResolve handles missing qerrors
+    Module.prototype.require = orig; // restore require handler after test
+  });
 });

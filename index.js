@@ -135,7 +135,7 @@ function injectCss(){ // handles runtime stylesheet loading logic
   let scriptEl = document.currentScript; // uses current script element when available
   if(!scriptEl){ // falls back to iterating all script tags when currentScript missing
    const scripts = Array.from(document.getElementsByTagName('script')); // gathers all script elements for manual search
-   scriptEl = scripts.find(s=>s.src && s.src.toLowerCase().endsWith('index.js')); // finds script with src ending index.js ignoring case
+   scriptEl = scripts.find(s => { const src = s.src ? s.src.toLowerCase().replace(/[?#].*$/, '') : ''; return src.endsWith('index.js'); }); // strips query/hash so index.js?v=1 still matches
   }
   if(!scriptEl){ scriptEl = document.querySelector('[data-qorecss]'); } // detects custom attribute for flexible inclusion
   const scriptSrc = scriptEl && scriptEl.src ? scriptEl.src : ''; // avoids errors when element or src missing

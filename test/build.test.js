@@ -141,3 +141,22 @@ describe('build windows binary path', {concurrency:false}, () => {
     assert.ok(fs.existsSync(minPath)); // hashed file should exist when build succeeds
   });
 });
+
+/*
+ * INDEX PATTERN MISMATCH HANDLING
+ *
+ * TESTING SCENARIO:
+ * Simulates an index.js file with an unrecognized cssFile pattern. The build
+ * script should throw an error when regex replacement fails to modify the file.
+ */
+describe('build index pattern mismatch', {concurrency:false}, () => {
+  it('throws when cssFile pattern missing', async () => {
+    const idxPath = path.join(tmpDir, 'index.js'); // index.js path for editing
+    const content = fs.readFileSync(idxPath, 'utf8'); // read copied index.js
+    fs.writeFileSync(idxPath, content.replace('`core.5c7df4d0.min.css`', '"core.5c7df4d0.min.css"')); // swaps backticks to break regex
+    await assert.rejects(
+      async () => await build(), // build should fail due to pattern mismatch
+      err => err.message.includes('pattern mismatch') // confirms thrown error
+    );
+  });
+});

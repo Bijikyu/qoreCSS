@@ -59,7 +59,7 @@ describe('run trims history', {concurrency:false}, () => {
     fs.writeFileSync(path.join(tmpDir,'performance-results.json'), JSON.stringify(history)); //(create initial file)
     fs.writeFileSync(path.join(tmpDir, 'build.hash'), 'abcdef'); //(mock hash file required by run)
     process.chdir(tmpDir); //(switch cwd for script)
-    process.argv = ['node','scripts/performance.js','1','--json']; //(setup argv for run function)
+    process.argv = ['node','scripts/performance.js','1','--json']; //(setup argv with request count 1)
   });
   afterEach(() => {
     fs.rmSync(tmpDir, {recursive:true, force:true}); //(remove temp directory)
@@ -77,7 +77,7 @@ describe('run without build.hash', {concurrency:false}, () => {
   beforeEach(() => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'perf-')); //(temporary directory for file operations)
     process.chdir(tmpDir); //(switch cwd for script without hash)
-    process.argv = ['node','scripts/performance.js','1']; //(setup argv)
+    process.argv = ['node','scripts/performance.js','1']; //(setup argv with request count 1)
   });
   afterEach(() => {
     fs.rmSync(tmpDir, {recursive:true, force:true}); //(remove temp directory)
@@ -126,7 +126,7 @@ describe('CDN_BASE_URL trailing slashes', {concurrency:false}, () => {
     process.chdir(tmpDir); //(switch cwd for script)
     fs.writeFileSync(path.join(tmpDir, 'build.hash'), 'abcdef'); //(mock hash file required by run)
     process.env.CDN_BASE_URL = 'http://testcdn///'; //(set trailing slashes for test)
-    process.argv = ['node','scripts/performance.js','1']; //(setup argv for run function)
+    process.argv = ['node','scripts/performance.js','1']; //(setup argv with request count 1)
     delete require.cache[require.resolve('../scripts/performance')]; //(reload module to apply env)
     performance = require('../scripts/performance'); //(import performance after env setup)
   });

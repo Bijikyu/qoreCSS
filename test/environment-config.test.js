@@ -156,7 +156,7 @@ describe('performance environment configuration', {concurrency:false}, () => {
     process.env.CDN_BASE_URL = 'https://custom-cdn.example.com'; // sets custom CDN base URL
     
     const originalArgv = process.argv; // preserves original arguments
-    process.argv = ['node', 'performance.js', '1']; // sets test arguments
+    process.argv = ['node', 'performance.js', '1']; // sets request count argument
     
     delete require.cache[require.resolve('../scripts/performance')]; // clears module cache for fresh import
     const performance = require('../scripts/performance'); // imports performance module with custom CDN

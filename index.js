@@ -48,6 +48,7 @@ function safeResolve(file){ // resolves path when require is present or falls ba
   if(errLog){ errLog(err,'safeResolve failed',{file}); } // structured logging when qerrors present
   else { console.error('safeResolve failed:', err.message); } // fallback replicating old behavior
  } // logs unexpected errors
+ if(typeof __dirname !== 'string'){ console.log(`safeResolve is returning ${file}`); return file; } // browsers lack __dirname so return provided file to avoid ReferenceError
  const abs = path.resolve(__dirname, file); // absolute fallback ensures bundlers find correct file even without require
  console.log(`safeResolve is returning ${abs}`); // logs absolute fallback path
  return abs; // returns absolute path when require unavailable for browser bundling

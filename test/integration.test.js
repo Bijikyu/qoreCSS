@@ -25,6 +25,7 @@ const os = require('node:os'); // operating system utilities for temporary direc
 const {describe, it, before, after} = require('node:test'); // Node.js native test framework components
 let build, updateHtml; // script function references, assigned after module cache clearing
 let tmpDir; // temporary directory path for isolated test execution
+let prevCodex; // holds incoming CODEX value for cleanup after tests
 
 /*
  * INTEGRATION TEST SETUP
@@ -35,6 +36,7 @@ let tmpDir; // temporary directory path for isolated test execution
  * conditions where build and HTML update scripts must coordinate perfectly.
  */
 before(() => {
+  prevCodex = process.env.CODEX; // record incoming CODEX for restoration
   process.env.CODEX = 'True'; // forces offline mode to prevent network dependencies
   tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'integ-')); // creates unique temporary directory for test isolation
   fs.writeFileSync(path.join(tmpDir, 'qore.css'), 'body{}'); // minimal CSS input for build processing
@@ -57,6 +59,7 @@ before(() => {
 after(() => {
   process.chdir(path.resolve(__dirname, '..')); // restores original working directory
   fs.rmSync(tmpDir, {recursive: true, force: true}); // removes temporary directory and all contents
+  if(prevCodex !== undefined){ process.env.CODEX = prevCodex; } else { delete process.env.CODEX; } // restore or clear CODEX after suite
 });
 
 /*

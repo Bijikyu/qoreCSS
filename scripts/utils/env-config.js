@@ -1,3 +1,6 @@
+// Centralized environment parsing utils for consistent config handling across scripts
+// Supports integer, string, boolean, and URL normalization to avoid duplicate logic
+// Uses `env-var` for robust parsing with defaults when values are missing or invalid
 const envVar = require('env-var'); // env-var provides robust env parsing
 
 function parseEnvInt(name, def, min = 1, max = 1000){

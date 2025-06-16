@@ -123,7 +123,7 @@ npm run lint
 
 Running `node scripts/updateHtml.js` after building rewrites `index.html` so
 the page loads the newly hashed CSS file. This step keeps the demo synchronized
-with the build output.
+with the build output. It also replaces any `{{CDN_BASE_URL}}` tokens with the configured CDN URL, ensuring links point to the correct endpoint.
 
 ### Build System
 The build system provides advanced features for production deployment:
@@ -157,11 +157,11 @@ SOCKET_LIMIT=50                        # HTTP connection pool size with lowered 
 
 # Performance Monitoring
 QUEUE_LIMIT=5                          # Number of requests run concurrently in each batch
-CODEX=true                             # Offline mode for development tests (skip network requests)
+CODEX=true                             # Enable offline mode for build and test scripts (skip network requests) <!-- clarifies offline mode extends to build and tests -->
 ```
 
 `MAX_CONCURRENCY` sets the total number of requests processed, while `QUEUE_LIMIT` controls how many run in parallel at a time.
-`CODEX` enables offline mode to run tests without network access.
+`CODEX` enables offline mode for build and test scripts so they run without network access.
 
 ## Performance
 
@@ -204,6 +204,10 @@ Supports all modern browsers with the following baseline:
 The project automatically builds and deploys to GitHub Pages on every push to `main`. The CDN is updated automatically through jsDelivr.
 
 For self-hosting, see [docs/self-hosting.md](docs/self-hosting.md) for optimal server configuration.
+
+### CDN Cache Purge
+After deployment run `node scripts/purge-cdn.js` to clear CDN caches so the latest hashed files are served. <!-- instructs users how to clear CDN -->
+You can optionally check CDN performance with `node scripts/performance.js` which measures response times. <!-- optional tool for CDN benchmarking -->
 
 ## License
 

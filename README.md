@@ -63,8 +63,10 @@ const variablesPath = qorecss.getVariables();
 #### Browser Auto-injection
 ```html
 <!-- Automatically injects CSS when script loads -->
-<script src="node_modules/qorecss/index.js"></script>
+<script src="node_modules/qorecss/index.js" data-qorecss></script>
 ```
+The optional `data-qorecss` attribute ensures the loader can resolve its
+relative path correctly when scripts are served from nested directories.
 
 ## Customization
 
@@ -207,7 +209,10 @@ For self-hosting, see [docs/self-hosting.md](docs/self-hosting.md) for optimal s
 
 ### CDN Cache Purge
 After deployment run `node scripts/purge-cdn.js` to clear CDN caches so the latest hashed files are served. <!-- instructs users how to clear CDN -->
-You can optionally check CDN performance with `node scripts/performance.js` which measures response times. <!-- optional tool for CDN benchmarking -->
+You can optionally check CDN performance with `node scripts/performance.js` which
+measures response times. Adding the `--json` flag writes results to
+`performance-results.json` so trends can be tracked over time. <!-- optional tool for CDN benchmarking -->
+
 
 ## License
 

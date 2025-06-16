@@ -21,6 +21,7 @@ beforeEach(() => {
 afterEach(() => {
   process.chdir(path.resolve(__dirname, '..')); // restore original working directory after test
   fs.rmSync(tmpDir, {recursive: true, force: true}); // clean up temporary directory to avoid interference
+  delete process.env.CODEX; // clear offline flag so later tests use default env
 });
 
 describe('build run twice', {concurrency:false}, () => {

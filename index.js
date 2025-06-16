@@ -157,13 +157,23 @@ function injectCss(){ // handles runtime stylesheet loading logic
   let basePath = ''; // default empty base path
   if (scriptSrc) {
     basePath = scriptSrc.slice(0, scriptSrc.lastIndexOf('/') + 1); // extracts directory path from script URL
+  } else {
+    const baseUrl = new URL(document.baseURI); // uses document baseURI when script missing for accurate path
+    basePath = baseUrl.href.slice(0, baseUrl.href.lastIndexOf('/') + 1); // derives directory portion of baseURI
   }
   console.log(`injectCss basePath ${basePath}`); // logs resolved base path for debugging
 
   const cssFile = `core.5c7df4d0.min.css`; // placeholder replaced during build
   const links = Array.from(document.head.querySelectorAll('link')); // grabs all current link elements to manage updates
   const coreRegex = /^core(?:\.[a-f0-9]{8})?\.min\.css$/; // targets only hashed or fallback core filenames for cleanup
-  links.forEach(l => { const file = (l.getAttribute('href') || '').split('/').pop(); if(coreRegex.test(file) && !file.includes(cssFile)){ l.remove(); console.log(`injectCss removed outdated ${l.href}`); } }); // removes old hashed links that don't match the new hash while leaving unrelated files
+  links.forEach(l => { // iterates existing links for cleanup with base path check
+    const href = l.getAttribute('href') || ''; // retrieves href for evaluation
+    if(!href.startsWith(basePath)) return; // skips when link not from same directory as script
+    const file = href.slice(basePath.length).split('/').pop(); // isolates file name relative to script path
+    if(coreRegex.test(file) && !file.includes(cssFile)){ // matches outdated hashed file names
+      l.remove(); console.log(`injectCss removed outdated ${l.href}`); // removes only matching outdated file
+    }
+  });
   const freshLinks = Array.from(document.head.querySelectorAll('link')); // re-queries after removals for up-to-date list
   const existing = freshLinks.find(l => l.href.includes(cssFile)); // searches for injected hashed file
   if(!existing){ // injects new file when hashed version not present

@@ -195,6 +195,17 @@ describe('browser injection', {concurrency:false}, () => {
     assert.ok(links.some(l => l.href.endsWith('core.extra.css'))); // verifies extra file still present after injection
   });
 
+  it('ignores hashed core files from other paths', () => {
+    const external = document.createElement('link'); // create stylesheet from another domain
+    external.href = 'https://cdn.other.com/core.12345678.min.css'; // mimics unrelated hashed file
+    external.rel = 'stylesheet'; // required rel attribute for CSS link
+    document.head.appendChild(external); // add external stylesheet before module load
+    require('../index.js'); // run injection which should not remove external file
+    const links = Array.from(document.head.querySelectorAll('link')); // gather all links after injection
+    assert.strictEqual(links.length, 2); // expect injected core hash plus external file
+    assert.ok(links.some(l => l.href.startsWith('https://cdn.other.com/'))); // confirm external file retained
+  });
+
   it('replaces qore.css link with hashed file', () => {
     const fallback = document.createElement('link'); // pre-existing plain CSS link for cleanup test
     fallback.href = 'qore.css'; // href that should be removed when hashed file injected

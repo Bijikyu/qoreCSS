@@ -88,4 +88,4 @@ The testing system measures and reports:
 - **Average Response Time**: Mean response time across all requests
 - **Statistical Analysis**: Includes zero-count protection and range validation
 - **CDN Comparison**: Side-by-side performance comparison between providers
-- **Historical Tracking**: JSON output enables trend analysis over time
+- **Historical Tracking**: JSON output enables trend analysis over time. Only the most recent 50 entries are kept in `performance-results.json`

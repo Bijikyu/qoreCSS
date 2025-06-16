@@ -151,8 +151,10 @@ function injectCss(){ // handles runtime stylesheet loading logic
   }
   if(!scriptEl){ scriptEl = document.querySelector('[data-qorecss]'); } // detects custom attribute for flexible inclusion
   const scriptSrc = scriptEl && scriptEl.src ? scriptEl.src : ''; // avoids errors when element or src missing
-  const scriptUrl = new URL(scriptSrc || document.baseURI, document.baseURI); // parses src relative to document base
-  const basePath = scriptUrl.href.slice(0, scriptUrl.href.lastIndexOf('/') + 1); // uses parsed URL to strip filename reliably
+  let basePath = ''; // default empty base path
+  if (scriptSrc) {
+    basePath = scriptSrc.slice(0, scriptSrc.lastIndexOf('/') + 1); // extracts directory path from script URL
+  }
   console.log(`injectCss basePath ${basePath}`); // logs resolved base path for debugging
 
   const cssFile = `core.5c7df4d0.min.css`; // placeholder replaced during build

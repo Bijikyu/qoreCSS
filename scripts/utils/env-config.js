@@ -1,3 +1,9 @@
+// ENV CONFIG UTILITY
+//
+// PURPOSE AND RATIONALE:
+// Centralizes environment variable parsing across scripts.
+// Uses env-var for validation and defaults.
+// Helper functions ensure consistent configuration logic.
 const envVar = require('env-var'); // env-var provides robust env parsing
 
 function parseEnvInt(name, def, min = 1, max = 1000){

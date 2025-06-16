@@ -155,6 +155,20 @@ describe('browser injection', {concurrency:false}, () => {
     assert.ok(link.href.startsWith('https://cdn.example.com/data/')); // ensures detection via data attribute
   });
 
+  it('prioritizes data-qorecss over other index.js scripts', () => {
+    const other = document.createElement('script'); // unrelated index.js for fallback search
+    other.src = 'https://cdn.other.com/ignore/index.js'; // path not used when data attribute exists
+    document.body.appendChild(other); // adds non-attribute script first
+    const target = document.createElement('script'); // script marked for css base path
+    target.src = 'https://cdn.target.com/assets/index.js'; // correct base path for injection
+    target.setAttribute('data-qorecss', ''); // attribute marks this script
+    document.body.appendChild(target); // adds attribute script after other
+    delete require.cache[require.resolve('../index.js')]; // ensures fresh module load
+    require('../index.js'); // executes injection
+    const link = document.querySelector('link'); // link inserted by injectCss
+    assert.ok(link.href.startsWith('https://cdn.target.com/assets/')); // verifies attribute script used
+  });
+
   it('defaults to document.baseURI when script not found', () => {
     require('../index.js'); // loads module with no identifiable script
     const link = document.querySelector('link'); // retrieves injected link

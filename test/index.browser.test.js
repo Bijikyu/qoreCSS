@@ -218,4 +218,19 @@ describe('browser injection', {concurrency:false}, () => {
     assert.ok(links[0].href.includes('core.5c7df4d0.min.css')); // validates hashed css link present
     assert.ok(!links[0].href.endsWith('qore.css')); // ensures fallback removed
   });
+
+  it('removes fallback when hash already present', () => {
+    const hashed = document.createElement('link'); // pre-existing hashed stylesheet to simulate prior injection
+    hashed.href = 'core.5c7df4d0.min.css'; // matching current hash value for detection
+    hashed.rel = 'stylesheet'; // rel attribute ensures valid stylesheet element
+    document.head.appendChild(hashed); // adds hashed file before module load
+    const fallback = document.createElement('link'); // fallback stylesheet link for removal test
+    fallback.href = 'qore.css'; // href targeted by injectCss cleanup logic
+    fallback.rel = 'stylesheet'; // ensures element recognized as stylesheet
+    document.head.appendChild(fallback); // adds fallback before module load
+    require('../index.js'); // loads module which should remove fallback but keep hash
+    const links = Array.from(document.head.querySelectorAll('link')); // collects remaining link elements post injection
+    assert.strictEqual(links.length, 1); // expects only hashed stylesheet to remain
+    assert.ok(links[0].href.includes('core.5c7df4d0.min.css')); // verifies hashed stylesheet retained
+  });
 });

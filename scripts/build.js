@@ -96,6 +96,10 @@ async function build(){
    * Error handling prevents failures if source file doesn't exist.
    */
   const targetFile = `core.${hash}.min.css`; // Builds hashed filename for renaming
+  if(fs.existsSync(targetFile)){ // checks for existing hashed file before rename to avoid EEXIST on windows
+    console.log(`build found existing ${targetFile} removing before rename`); // logs rationale for removal prior to rename
+    await fsp.unlink(targetFile); // deletes existing hashed file so rename succeeds cross-platform
+  }
   try {
     await fsp.access('core.min.css'); // Verifies source file exists before rename
     await fsp.rename('core.min.css', targetFile); // Renames processed css with hash
@@ -156,15 +160,18 @@ async function build(){
   await fsp.writeFile('build.hash', hash); // Persists hash for deployment scripts
 
   if(fs.existsSync('index.js')){ // ensures index.js exists before attempting replacement
-   const js = await fsp.readFile('index.js','utf8'); // reads index.js for injection update
-   const pattern = /const cssFile = `(?:qore\.css|core\.[a-f0-9]{8}\.min\.css)`;/; // pattern matches existing placeholder to replace
-   const updated = js.replace(pattern, `const cssFile = \`core.${hash}.min.css\`;`); // inserts hashed file name if pattern found
-   if(updated === js){ // verifies replacement occurred
-    const err = new Error('index.js cssFile pattern mismatch'); // error clarifies reason
-    qerrors(err, 'build regex failed', {pattern:pattern.source}); // logs failure context for debugging
-    throw err; // stops build when index.js not updated
-   }
-   await fsp.writeFile('index.js', updated); // writes file when replacement succeeded
+    const js = await fsp.readFile('index.js','utf8'); // reads index.js for injection update
+    const pattern = /const cssFile = `(?:qore\.css|core\.[a-f0-9]{8}\.min\.css)`;/; // pattern matches existing placeholder to replace
+    const updated = js.replace(pattern, `const cssFile = \`core.${hash}.min.css\`;`); // inserts hashed file name if pattern found
+    if(updated === js){ // checks whether replacement changed content
+      if(!js.includes(`core.${hash}.min.css`)){ // fails only when pattern missing, allowing identical hash
+        const err = new Error('index.js cssFile pattern mismatch'); // error clarifies reason for developer
+        qerrors(err, 'build regex failed', {pattern:pattern.source}); // logs failure context for debugging
+        throw err; // stops build when index.js not updated and pattern absent
+      }
+    } else {
+      await fsp.writeFile('index.js', updated); // writes file when hash updated to new value
+    }
   }
   console.log(`build is returning ${hash}`); // Logs return value for debugging
   return hash; // Returns hash for programmatic usage

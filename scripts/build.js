@@ -128,7 +128,8 @@ async function build(){
    * Cleanup happens after file creation to prevent race conditions.
    */
   const files = (await fsp.readdir('.')).filter(f => /^core\.[a-f0-9]{8}\.min\.css$/.test(f) && f !== targetFile); // Lists old hashed files
-  await Promise.all(files.map(f => fsp.unlink(f))); // Removes outdated hashed css
+  const oldResults = await Promise.allSettled(files.map(f => fsp.unlink(f))); // attempts removal without failing
+  oldResults.forEach(res => { if(res.status==='rejected' && res.reason.code!=='ENOENT'){ throw res.reason; } }); // rethrows unexpected errors while ignoring missing files
   
   /*
    * COMPRESSED FILE CLEANUP
@@ -136,7 +137,8 @@ async function build(){
    * These files can be large and accumulate quickly without cleanup.
    */
   const compressedOld = (await fsp.readdir('.')).filter(f => /^core\.[a-f0-9]{8}\.min\.css\.(?:gz|br)$/.test(f) && !f.includes(hash)); // Finds old compressed files
-  await Promise.all(compressedOld.map(f => fsp.unlink(f))); // Deletes old compressed files
+  const compResults = await Promise.allSettled(compressedOld.map(f => fsp.unlink(f))); // attempts deletion ignoring missing files
+  compResults.forEach(res => { if(res.status==='rejected' && res.reason.code!=='ENOENT'){ throw res.reason; } }); // surfaces non-ENOENT errors for logging
 
   /*
    * COMPRESSION GENERATION

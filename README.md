@@ -133,6 +133,7 @@ The build system provides advanced features for production deployment:
 - **Gzip and Brotli compression** for reduced file sizes
 - **CDN integration** with automatic cache purging
 - **Performance monitoring** with timing measurements
+- **Hash persistence** with `build.hash` and automatic `index.js` update for browser injection
 
 ### Testing Infrastructure
 Comprehensive testing covers all framework components:
@@ -156,9 +157,11 @@ SOCKET_LIMIT=50                        # HTTP connection pool size with lowered 
 
 # Performance Monitoring
 QUEUE_LIMIT=5                          # Number of requests run concurrently in each batch
+CODEX=true                             # Offline mode for development tests (skip network requests)
 ```
 
 `MAX_CONCURRENCY` sets the total number of requests processed, while `QUEUE_LIMIT` controls how many run in parallel at a time.
+`CODEX` enables offline mode to run tests without network access.
 
 ## Performance
 

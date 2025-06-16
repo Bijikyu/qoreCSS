@@ -111,17 +111,20 @@ describe('browser injection', {concurrency:false}, () => {
   });
 
   it('uses document.currentScript when present', () => {
-    // Clear all existing links first
+    // Clear all existing links and scripts first
     document.querySelectorAll('link').forEach(link => link.remove());
+    document.querySelectorAll('script').forEach(script => script.remove());
     
     const script = document.createElement('script'); // creates mock script element
     script.src = 'https://cdn.example.com/lib/index.js'; // sets src for detection
+    document.head.appendChild(script); // adds script to DOM for fallback detection
     document.currentScript = script; // assigns as currentScript
     delete require.cache[require.resolve('../index.js')]; // clears cache to ensure fresh execution
     require('../index.js'); // loads module to trigger injection
     const link = document.querySelector('link'); // retrieves injected link
     assert.ok(link.href.startsWith('https://cdn.example.com/lib/')); // validates base path resolution
     document.currentScript = null; // cleans up global assignment
+    script.remove(); // cleanup script element
   });
 
   it('detects script element by src pattern', () => {

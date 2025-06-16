@@ -30,6 +30,10 @@ let errLog; // holds qerrors function or console fallback
 try { // attempts qerrors for structured logging like logger utility
   errLog = require('qerrors'); // assigns qerrors when available for consistency
 } catch { errLog = null; } // absence handled later to preserve console output
+let fs; // holds node:fs module for existence checks
+if(typeof require==='function'){ // ensures require exists before attempting fs load
+  try { fs = require('node:fs'); } catch { fs = null; } // safe attempt to load fs or fallback
+} else { fs = null; } // browser environment fallback when require undefined
 
 /*
  * MAIN EXPORT OBJECT CONSTRUCTION
@@ -53,6 +57,11 @@ function safeResolve(file){ // resolves path when require is present or falls ba
  } // logs unexpected errors
  const baseDir = typeof __dirname === 'string' ? __dirname : ''; // guards __dirname so browsers without Node globals do not throw
  const abs = path.resolve(baseDir, file); // absolute fallback ensures bundlers find correct file even without require
+ if(fs && fs.existsSync && !fs.existsSync(abs)){ // verifies file exists when using fallback
+  const err = new Error(`file not found: ${abs}`); // error describes missing file path
+  if(errLog){ errLog(err,'safeResolve missing',{file}); } else { console.error('safeResolve missing:', err.message); } // logs via qerrors or console
+  throw err; // throws to signal unresolved path to caller
+ }
  console.log(`safeResolve is returning ${abs}`); // logs absolute fallback path
  return abs; // returns absolute path when require unavailable for browser bundling
 }

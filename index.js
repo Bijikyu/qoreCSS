@@ -172,9 +172,11 @@ function injectCss(){ // handles runtime stylesheet loading logic
     if(coreRegex.test(file) && file !== cssFile){ l.remove(); console.log(`injectCss removed outdated ${l.href}`); } // removes hashed links not matching new hash exactly
   }); // iterates existing links to remove stale hashes
   const freshLinks = Array.from(document.head.querySelectorAll('link')); // re-queries after removals for up-to-date list
-  const fallback = freshLinks.find(l => l.href.includes('qore.css')); // locates plain qore.css link for unconditional removal
-  if(fallback){ fallback.remove(); console.log(`injectCss removed fallback ${fallback.href}`); } // ensures fallback always removed for hashed usage
-  const existing = freshLinks.find(l => l.href.includes(cssFile)); // searches for injected hashed file
+  const fallbacks = freshLinks.filter(l => l.href.includes('qore.css')); // collects all plain qore.css links for removal
+  fallbacks.forEach(l=>{ l.remove(); console.log(`injectCss removed fallback ${l.href}`); }); // removes every fallback to guarantee hashed use
+  const hashedLinks = Array.from(document.head.querySelectorAll('link')).filter(l => l.href.includes(cssFile)); // gathers all hashed links to detect duplicates
+  if(hashedLinks.length>1){ hashedLinks.slice(1).forEach(l=>{ l.remove(); console.log(`injectCss removed duplicate ${l.href}`); }); } // removes extras so only one hashed link remains
+  const existing = hashedLinks[0]; // reference remaining hashed link if present
   if(!existing){ // injects new file when hashed version not present
    const link = document.createElement('link'); // creates stylesheet link element
    link.rel = 'stylesheet'; // declares relationship to browser

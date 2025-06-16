@@ -151,6 +151,11 @@ async function readBuildHash(){
  try {
   const data = await fs.promises.readFile('build.hash','utf8'); // read hash file content
   const trimmed = data.trim(); // remove trailing whitespace
+  if(!/^[a-f0-9]{8}$/.test(trimmed)){ // checks hash pattern to ensure valid filename usage
+    qerrors(new Error('invalid hash'), 'readBuildHash invalid', {hash:trimmed}); // logs invalid hash with context
+    console.log("readBuildHash is returning ''"); // communicates failure fallback
+    return ''; // return empty string when hash invalid
+  }
   console.log(`readBuildHash is returning ${trimmed}`); // log success
   return trimmed; // return trimmed hash
  } catch(err){

@@ -1,3 +1,8 @@
+
+// Centralized environment parsing utils for consistent config handling across scripts
+// Supports integer, string, boolean, and URL normalization to avoid duplicate logic
+// Uses `env-var` for robust parsing with defaults when values are missing or invalid
+
 /*
  * ENVIRONMENT VARIABLE PARSING UTILITIES
  *

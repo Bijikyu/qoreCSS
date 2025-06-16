@@ -22,6 +22,7 @@
  * providing an intuitive API for developers familiar with modern npm packages.
 */
 
+const path = typeof require === 'function' ? require('node:path') : {resolve:(_d,f)=>f}; // node path or fallback object for browser use
 let errLog; // holds qerrors function or console fallback
 try { // attempts qerrors for structured logging like logger utility
   errLog = require('qerrors'); // assigns qerrors when available for consistency
@@ -47,8 +48,9 @@ function safeResolve(file){ // resolves path when require is present or falls ba
   if(errLog){ errLog(err,'safeResolve failed',{file}); } // structured logging when qerrors present
   else { console.error('safeResolve failed:', err.message); } // fallback replicating old behavior
  } // logs unexpected errors
- console.log(`safeResolve is returning ${file}`); // logs fallback path for browsers
- return file; // returns plain path when require unavailable
+ const abs = path.resolve(__dirname, file); // absolute fallback ensures bundlers find correct file even without require
+ console.log(`safeResolve is returning ${abs}`); // logs absolute fallback path
+ return abs; // returns absolute path when require unavailable for browser bundling
 }
 
 const qorecss = { // holds public API properties and helpers

@@ -155,8 +155,9 @@ if (typeof window === 'undefined' && typeof module !== 'undefined' && module.exp
 function injectCss(){ // handles runtime stylesheet loading logic
  console.log(`injectCss is running with ${document.currentScript && document.currentScript.src}`); // logs entry and script src
  try {
-  let scriptEl = document.currentScript; // uses current script element when available
-  if(!scriptEl){ // falls back to iterating all script tags when currentScript missing
+  let scriptEl = document.querySelector('script[data-qorecss]'); // prioritizes explicit attribute for accurate base path
+  if(!scriptEl){ scriptEl = document.currentScript; } // falls back to currentScript when attribute missing
+  if(!scriptEl){ // iterates when neither attribute nor currentScript found
    const scripts = Array.from(document.getElementsByTagName('script')); // gathers all script elements for manual search
    scriptEl = scripts.find(s=>{ // searches for matching script by pathname
     try{ // protects against invalid URLs in script tags
@@ -164,7 +165,6 @@ function injectCss(){ // handles runtime stylesheet loading logic
     }catch{return false;} // ignores scripts with bad URLs
    });
   }
-  if(!scriptEl){ scriptEl = document.querySelector('script[data-qorecss]'); } // selects only script elements for reliable base path
   const scriptSrc = scriptEl && scriptEl.src ? scriptEl.src : ''; // avoids errors when element or src missing
   let basePath = ''; // default empty base path
   if (scriptSrc) {

@@ -149,10 +149,10 @@ Configure the build and deployment process:
 CDN_BASE_URL=https://cdn.jsdelivr.net  # CDN endpoint for deployment (trailing slash removed automatically; defaults to jsDelivr when empty)
 
 MAX_CONCURRENCY=50                     # Performance test concurrency limit
-SOCKET_LIMIT=100                       # HTTP connection pool size
+SOCKET_LIMIT=50                        # HTTP connection pool size with lowered default
 
 # Performance Monitoring
-QUEUE_LIMIT=10                         # Request queue size for testing
+QUEUE_LIMIT=5                          # Request queue size for testing with reduced limit
 ```
 
 ## Performance

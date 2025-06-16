@@ -55,7 +55,7 @@ axiosRetry(axiosInstance,{retryDelay:axiosRetry.exponentialDelay,shouldResetTime
  * - Network reality (allows for slow connections)
  * - Resource management (prevents hanging connections)
  */
-async function fetchRetry(url,opts={},attempts=3){
+async function fetchRetry(url,opts,attempts=3){
   console.log(`fetchRetry is running with ${url},${attempts}`); // logs entry with parameters
 
   if(typeof attempts!=='number'||Number.isNaN(attempts)){ console.log(`fetchRetry is returning attempts must be numeric`); throw new Error('attempts must be numeric'); } // validates numeric attempt parameter
@@ -65,6 +65,8 @@ async function fetchRetry(url,opts={},attempts=3){
   if(!Number.isInteger(attempts)){ console.log(`fetchRetry is returning attempts must be an integer`); throw new Error('attempts must be an integer'); } // ensures deterministic retry count
 
   if(attempts < 1){ console.log(`fetchRetry is returning attempts must be >0`); throw new Error('attempts must be >0'); } // validates positive attempt count
+
+  if(!opts||typeof opts!=='object'||Array.isArray(opts)||Object.getPrototypeOf(opts)!==Object.prototype){ opts={}; } // ensures opts is plain object to avoid runtime errors
  
  /*
   * TIMEOUT CONFIGURATION

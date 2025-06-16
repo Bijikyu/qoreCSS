@@ -184,6 +184,24 @@ describe('browser injection', {concurrency:false}, () => {
     fs.unlinkSync(tmpPath); // cleanup temporary script file
   });
 
+  it('updates href when same hash loaded from new base path', () => {
+    const script1 = document.createElement('script'); // first script element for initial load
+    script1.src = 'https://cdn.one/lib/index.js'; // base path one for stylesheet
+    document.currentScript = script1; // assigns as current script for injection
+    require('../index.js'); // performs initial injection
+    const link = document.querySelector('link'); // captures created link element
+    assert.ok(link.href.startsWith('https://cdn.one/lib/')); // verifies first base path
+    delete require.cache[require.resolve('../index.js')]; // clears cache for second load
+    const script2 = document.createElement('script'); // second script with new base
+    script2.src = 'https://cdn.two/lib/index.js'; // new base path two
+    document.currentScript = script2; // sets new current script
+    require('../index.js'); // triggers injectCss again which should update href
+    const updated = document.querySelector('link'); // retrieves (updated) link
+    assert.strictEqual(link, updated); // should be same DOM element updated
+    assert.ok(updated.href.startsWith('https://cdn.two/lib/')); // confirms href changed to new base
+    document.currentScript = null; // cleanup currentScript assignment
+  });
+
   it('keeps unrelated core files intact', () => {
     const extra = document.createElement('link'); // prepares additional stylesheet for removal test
     extra.href = 'core.extra.css'; // unrelated file should not match regex in injectCss

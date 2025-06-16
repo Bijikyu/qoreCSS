@@ -166,6 +166,8 @@ function injectCss(){ // handles runtime stylesheet loading logic
   links.forEach(l => { const file = (l.getAttribute('href') || '').split('/').pop(); if(coreRegex.test(file) && !file.includes(cssFile)){ l.remove(); console.log(`injectCss removed outdated ${l.href}`); } }); // removes old hashed links that don't match the new hash while leaving unrelated files
   const freshLinks = Array.from(document.head.querySelectorAll('link')); // re-queries after removals for up-to-date list
   const existing = freshLinks.find(l => l.href.includes(cssFile)); // searches for injected hashed file
+  const newHref = `${basePath}${cssFile}`; // constructs expected href for comparison
+  if(existing && existing.href !== newHref){ const old = existing.href; existing.href = newHref; console.log(`injectCss updated ${old} to ${newHref}`); } // updates path when base differs for consistent caching
   if(!existing){ // injects new file when hashed version not present
    const fallback = freshLinks.find(l => l.href.includes('qore.css')); // detects plain qore.css link for cleanup
    if(fallback){ fallback.remove(); console.log(`injectCss removed fallback ${fallback.href}`); } // cleans up old non-hashed link

@@ -161,8 +161,11 @@ function injectCss(){ // handles runtime stylesheet loading logic
   const links = Array.from(document.head.querySelectorAll('link')); // grabs all current link elements to manage updates
   const coreRegex = /^core(?:\.[a-f0-9]{8})?\.min\.css$/; // targets only hashed or fallback core filenames for cleanup
   links.forEach(l => { const file = (l.getAttribute('href') || '').split('/').pop(); if(coreRegex.test(file) && !file.includes(cssFile)){ l.remove(); console.log(`injectCss removed outdated ${l.href}`); } }); // removes old hashed links that don't match the new hash while leaving unrelated files
-  const existing = links.find(l => l.href.includes(cssFile) || l.href.includes('qore.css')); // searches for prior injection by hashed or fallback name after cleanup
-  if(!existing){ // avoids duplicate injection when link already present
+  const freshLinks = Array.from(document.head.querySelectorAll('link')); // re-queries after removals for up-to-date list
+  const existing = freshLinks.find(l => l.href.includes(cssFile)); // searches for injected hashed file
+  if(!existing){ // injects new file when hashed version not present
+   const fallback = freshLinks.find(l => l.href.includes('qore.css')); // detects plain qore.css link for cleanup
+   if(fallback){ fallback.remove(); console.log(`injectCss removed fallback ${fallback.href}`); } // cleans up old non-hashed link
    const link = document.createElement('link'); // creates stylesheet link element
    link.rel = 'stylesheet'; // declares relationship to browser
    link.type = 'text/css'; // MIME type for clarity across tools

@@ -194,4 +194,16 @@ describe('browser injection', {concurrency:false}, () => {
     assert.strictEqual(links.length, 2); // expect new core hash plus existing extra file
     assert.ok(links.some(l => l.href.endsWith('core.extra.css'))); // verifies extra file still present after injection
   });
+
+  it('replaces qore.css link with hashed file', () => {
+    const fallback = document.createElement('link'); // pre-existing plain CSS link for cleanup test
+    fallback.href = 'qore.css'; // href that should be removed when hashed file injected
+    fallback.rel = 'stylesheet'; // sets standard rel value
+    document.head.appendChild(fallback); // inserts fallback before module load
+    require('../index.js'); // triggers injection which should remove fallback
+    const links = Array.from(document.head.querySelectorAll('link')); // gathers final links after injection
+    assert.strictEqual(links.length, 1); // expects single stylesheet in document
+    assert.ok(links[0].href.includes('core.5c7df4d0.min.css')); // validates hashed css link present
+    assert.ok(!links[0].href.endsWith('qore.css')); // ensures fallback removed
+  });
 });

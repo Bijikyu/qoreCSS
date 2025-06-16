@@ -184,6 +184,18 @@ describe('browser injection', {concurrency:false}, () => {
     fs.unlinkSync(tmpPath); // cleanup temporary script file
   });
 
+  it('removes hashed link with query string', () => {
+    const old = document.createElement('link'); // prepares old hashed file with query for removal test
+    old.href = 'core.123.min.css?old=1'; // simulates previous hashed file with query parameters
+    old.rel = 'stylesheet'; // sets rel attribute for valid stylesheet
+    document.head.appendChild(old); // inserts outdated link before module load
+    require('../index.js'); // triggers injectCss which should remove outdated link
+    const links = Array.from(document.head.querySelectorAll('link')); // collects all link elements after injection
+    assert.strictEqual(links.length, 1); // expects only new hashed link to remain
+    assert.ok(links[0].href.includes('core.5c7df4d0.min.css')); // verifies new hashed link present
+    assert.ok(!links.some(l => l.href.includes('core.123.min.css'))); // ensures old hashed link removed
+  });
+
   it('keeps unrelated core files intact', () => {
     const extra = document.createElement('link'); // prepares additional stylesheet for removal test
     extra.href = 'core.extra.css'; // unrelated file should not match regex in injectCss

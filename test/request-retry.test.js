@@ -186,3 +186,22 @@ describe('fetchRetry infinite attempts', {concurrency:false}, () => {
     );
   });
 });
+
+/*
+ * NULL OPTIONS HANDLING
+ *
+ * TESTING SCOPE:
+ * Ensures fetchRetry gracefully handles a null opts parameter
+ * by substituting an empty object and applying default timeout.
+ */
+describe('fetchRetry null opts', {concurrency:false}, () => {
+  it('defaults timeout when opts is null', async () => {
+    let passedOpts; // captures options passed to axios for assertion
+    mock.method(axios, 'get', async (url, opts) => { passedOpts = opts; return {status:200}; }); // intercepts axios.get to record opts
+    delete require.cache[require.resolve('../scripts/request-retry')]; // reloads module after mock setup
+    fetchRetry = require('../scripts/request-retry'); // imports fetchRetry with new axios mock
+    const res = await fetchRetry('http://a', null); // executes with null opts to trigger defaulting
+    assert.strictEqual(res.status, 200); // validates successful response
+    assert.strictEqual(passedOpts.timeout, 10000); // confirms default timeout applied
+  });
+});

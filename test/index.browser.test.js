@@ -234,6 +234,21 @@ describe('browser injection', {concurrency:false}, () => {
     assert.ok(links[0].href.includes('core.5c7df4d0.min.css')); // verifies hashed stylesheet retained
   });
 
+  it('removes duplicate hashed links', () => {
+    const first = document.createElement('link'); // first hash instance for duplicate test
+    first.href = 'core.5c7df4d0.min.css'; // hashed filename for duplicate removal
+    first.rel = 'stylesheet'; // rel attribute for stylesheet
+    document.head.appendChild(first); // adds first hashed link before module load
+    const dup = document.createElement('link'); // duplicate hashed stylesheet for cleanup
+    dup.href = 'core.5c7df4d0.min.css'; // same hashed file triggers duplicate detection
+    dup.rel = 'stylesheet'; // standard rel value for CSS link
+    document.head.appendChild(dup); // appends duplicate before module load
+    require('../index.js'); // loads module which should remove duplicate
+    const links = document.querySelectorAll('link'); // collects remaining links after injection
+    assert.strictEqual(links.length, 1); // expects only one hashed link to remain
+    assert.ok(links[0].href.includes('core.5c7df4d0.min.css')); // verifies remaining link uses hashed file
+  });
+
   it('removes onerror after fallback to prevent loop', () => {
     require('../index.js'); // triggers injection to create link with handler
     const link = document.querySelector('link'); // retrieves injected stylesheet link

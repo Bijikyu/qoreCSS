@@ -58,6 +58,10 @@ const cssPath = qorecss.getStylesheet();
 
 // Get CSS variables file
 const variablesPath = qorecss.getVariables();
+// Absolute paths are also exposed directly
+const coreCssPath = qorecss.coreCss; // path to qore.css
+const varsCssPath = qorecss.variablesCss; // path to variables.css
+const isServer = qorecss.serverSide; // true when running under Node.js
 ```
 
 #### Browser Auto-injection

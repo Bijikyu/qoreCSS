@@ -1,3 +1,11 @@
+/*
+ * CDN URL NORMALIZATION CONSISTENCY TESTING
+ *
+ * PURPOSE AND RATIONALE:
+ * Ensures that both the performance script and HTML update script interpret
+ * CDN_BASE_URL environment variable in the exact same way. Consistent
+ * normalization prevents mismatched URLs between measurement and deployment.
+ */
 require('./helper'); // loads axios/qerrors stubs for test isolation
 const assert = require('node:assert'); // assertion library for validations
 const fs = require('node:fs'); // filesystem access for temporary files

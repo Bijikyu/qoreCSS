@@ -1,3 +1,11 @@
+/*
+ * INDEX MODULE BROWSER TESTING WITHOUT REQUIRE()
+ *
+ * PURPOSE AND RATIONALE:
+ * Simulates a pure browser environment where the CommonJS require function
+ * is unavailable. This verifies that index.js still injects CSS properly
+ * using fallback logic when consumed via a script tag.
+ */
 require('./helper');
 const assert = require('node:assert');
 const path = require('node:path');

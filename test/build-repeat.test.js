@@ -1,3 +1,11 @@
+/*
+ * REPEATED BUILD EXECUTION TESTING
+ *
+ * PURPOSE AND RATIONALE:
+ * Validates that running the build script multiple times in the same
+ * environment does not produce errors or inconsistent artifacts. This is
+ * important for CI pipelines which may invoke the build step repeatedly.
+ */
 require("./helper"); // loads stubs for axios and qerrors dependencies ensuring offline consistency
 const assert = require('node:assert'); // assertion library for test validations
 const fs = require('node:fs'); // file system module for test setup and verification

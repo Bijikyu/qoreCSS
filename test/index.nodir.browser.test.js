@@ -1,3 +1,11 @@
+/*
+ * INDEX MODULE BROWSER TESTING WITH __dirname UNDEFINED
+ *
+ * PURPOSE AND RATIONALE:
+ * Validates that index.js handles the absence of the Node.js __dirname
+ * variable, which some bundlers or browser environments may omit. This
+ * ensures CSS injection still succeeds without Node-specific globals.
+ */
 require('./helper');
 const assert = require('node:assert');
 const path = require('node:path');

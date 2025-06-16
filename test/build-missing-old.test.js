@@ -1,3 +1,11 @@
+/*
+ * BUILD SCRIPT OLD FILE CLEANUP TESTING
+ *
+ * PURPOSE AND RATIONALE:
+ * Ensures that leftover files from previous builds do not cause errors when a
+ * new build runs. This test simulates stale artifacts and verifies the build
+ * script cleans them up gracefully.
+ */
 require("./helper"); // ensures axios and qerrors stubs are active for offline reliability
 const assert = require('node:assert'); // assertion library for validations
 const fs = require('node:fs'); // filesystem methods for setup and checks

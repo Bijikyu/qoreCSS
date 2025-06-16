@@ -40,6 +40,9 @@ A comprehensive, modern CSS framework engineered for rapid web development with 
 <!-- Or use always-latest version (less optimal caching) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Bijikyu/qoreCSS/qore.css">
 ```
+### Prerequisites
+Node.js 20 or higher is required. Earlier Node versions may lack built-in modules used by the build system and tests.
+
 
 ### NPM Installation
 ```bash

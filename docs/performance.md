@@ -40,16 +40,18 @@ Configure performance testing behavior through environment variables:
 ```bash
 # CDN Configuration
 export CDN_BASE_URL=https://cdn.jsdelivr.net    # Primary CDN endpoint (trailing slash removed automatically; defaults to jsDelivr when empty)
-export MAX_CONCURRENCY=50                        # Maximum concurrent requests (1-1000)
+export MAX_CONCURRENCY=50                        # Caps total requests processed during tests (1-1000)
 export SOCKET_LIMIT=50                           # HTTP connection pool size (1-1000) with new default
 
 # Testing Parameters
-export QUEUE_LIMIT=5                             # Request queue size (1-100) with new default
+export QUEUE_LIMIT=5                             # Number of requests run concurrently in each batch (1-100)
 export CODEX=true                                # Enable offline testing mode
 
 # Run tests with custom configuration
 node scripts/performance.js 25 --json
 ```
+
+`MAX_CONCURRENCY` sets the total number of requests processed across all batches, while `QUEUE_LIMIT` determines how many of those requests run at the same time.
 
 ## Comprehensive Test Suite
 

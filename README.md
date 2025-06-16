@@ -108,7 +108,6 @@ Copy `variables.css` to your project and modify the CSS custom properties to mat
 ### Layout
 - `.row`, `.col` - Flexbox containers
 - `.center`, `.centerAlign` - Centering utilities
-- `.superCenter` - Perfect centering for main content
 - `.grid`, `.grid3`, `.grid4` - CSS Grid layouts
 - `.col50`, `.col80` - Percentage widths
 
@@ -116,13 +115,13 @@ Copy `variables.css` to your project and modify the CSS custom properties to mat
 - `.card`, `.cardWhite` - Card components
 - `.bright`, `.dark`, `.lightest` - Background colors
 - `.textCenter`, `.textLeft` - Text alignment
-- `.padding20`, `.margin30` - Spacing utilities
+- `.pad15`, `.margin30` - Spacing utilities
 - `.obscure` - Glass morphism effect
 
 ### Icons
 - `.icon` - Applies theme color adjustments
 - `.iconLarge` - Large icon sizing
-- `.sq15`, `.sq25` - Square icon sizes
+- `.sq15`, `.sq50`, `.sq75`, `.sq250` - Square icon sizes
 
 ## Development
 

@@ -85,7 +85,7 @@ async function updateHtml(){
    * Rationale: Single regex now also matches core.min.css to update legacy templates.
    * Global flag (g) ensures all references update in one pass for consistency.
    */
-  let updated = html.replace(/(?:qore\.css|core\.min\.css|core\.[a-f0-9]{8}\.min\.css)/g, `core.${hash}.min.css`); // ensures every CSS reference uses hashed filename
+  let updated = html.replace(/(?:qore\.css|core\.min\.css|core\.[a-f0-9]{8}\.min\.css)(?!\.(?:gz|br))/g, `core.${hash}.min.css`); // negative lookahead avoids altering compressed files
   
   /*
    * CDN PLACEHOLDER SUBSTITUTION

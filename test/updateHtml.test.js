@@ -144,6 +144,14 @@ describe('updateHtml', () => {
     assert.strictEqual(count, 2); // both references should be replaced
     assert.strictEqual(hash, '12345678'); // returned hash remains correct
   });
+  it('leaves gzipped reference unchanged', async () => {
+    fs.writeFileSync(path.join(tmpDir, 'index.html'), '<link href="core.aaaaaaaa.min.css.gz">'); // gzipped css should remain as generated
+    const hash = await updateHtml(); // execute update
+    const updated = fs.readFileSync(path.join(tmpDir, 'index.html'), 'utf8'); // retrieve updated html
+    assert.ok(updated.includes('core.aaaaaaaa.min.css.gz')); // verify compressed file kept same name
+    assert.strictEqual(hash, '12345678'); // returned hash should be unchanged
+  });
+
 
   it('writes file using utf8 encoding', async () => {
     let encOpt; // stores provided encoding option for assertion

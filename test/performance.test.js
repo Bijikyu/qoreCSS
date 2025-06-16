@@ -137,12 +137,13 @@ describe('CDN_BASE_URL trailing slashes', {concurrency:false}, () => {
   });
   it('trims trailing slashes from CDN base', async () => {
     const {mock} = require('node:test');
-    const spy = mock.method(console, 'log', ()=>{}); //(capture log output)
+    const spy = mock.method(console, 'log', ()=>{}); //(capture log output for restoration)
     await performance.run(); //(execute run to produce URLs)
     const call = spy.mock.calls.find(c => String(c.arguments[0]).startsWith('Average for')); //(find first average line)
     const match = String(call.arguments[0]).match(/Average for (.+):/); //(regex extracts url before colon after path)
     const url = match ? match[1] : '';//(isolate url string from log)
     const base = url.split('/gh/')[0]; //(extract base domain before repo path)
     assert.strictEqual(base, 'http://testcdn'); //(expect trailing slashes removed)
+    spy.mock.restore(); //(restore original console.log after test)
   });
 });

@@ -14,4 +14,14 @@ describe('browser without require', {concurrency:false}, () => {
     assert.ok(dom.window.qorecss); // confirms global API exposed
     dom.window.close();
   });
+
+  it('injectCss returns link element reference', () => {
+    const dom = new JSDOM('<!DOCTYPE html><html><head></head><body></body></html>', {runScripts:'dangerously', url:'https://example.com/'});
+    const script = fs.readFileSync(path.resolve(__dirname, '../index.js'), 'utf8');
+    dom.window.eval(script); // executes script globally to expose injectCss
+    const first = dom.window.document.querySelector('link');
+    const returned = dom.window.injectCss(); // calls function again expecting same link
+    assert.strictEqual(returned, first); // verifies returned element matches existing link
+    dom.window.close();
+  });
 });

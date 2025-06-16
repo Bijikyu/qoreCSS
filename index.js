@@ -22,7 +22,10 @@
  * providing an intuitive API for developers familiar with modern npm packages.
 */
 
-const path = typeof require === 'function' ? require('node:path') : {resolve:(_d,f)=>f}; // node path or fallback object for browser use
+let path; // holds node:path module or fallback when unavailable
+if(typeof require==='function'){ // ensures require exists before attempting load
+  try { path = require('node:path'); } catch { path = {resolve:(_d,f)=>f}; } // safe attempt to load node:path or fallback
+} else { path = {resolve:(_d,f)=>f}; } // browser environment fallback when require undefined
 let errLog; // holds qerrors function or console fallback
 try { // attempts qerrors for structured logging like logger utility
   errLog = require('qerrors'); // assigns qerrors when available for consistency

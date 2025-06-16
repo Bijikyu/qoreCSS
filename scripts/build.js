@@ -48,9 +48,17 @@ const {parseEnvBool} = require('./utils/env-config'); // standardized boolean en
  * All operations are wrapped in try/catch with detailed error context.
  * This ensures failures are properly logged and the build process can be debugged.
  */
-async function build(){ 
+async function build(){
  console.log(`build is running with ${process.argv.length}`); // Logs function entry with argument count for debugging
  try {
+  try { // ensures source CSS exists before any build steps run
+   await fsp.access('qore.css'); // verifies qore.css presence to avoid later failures
+  } catch(err){
+   qerrors(err, 'qore.css missing', {cwd:process.cwd()}); // logs missing file with working directory for context
+   const accessErr = new Error('Build aborted: qore.css not found'); // creates explicit error message while preserving code
+   accessErr.code = err.code; // maintain ENOENT code for test assertions
+   throw accessErr; // stops build early when source file absent
+  }
   /*
    * POSTCSS EXECUTION
    * Rationale: PostCSS with autoprefixer ensures CSS works across all supported browsers.

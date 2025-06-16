@@ -41,16 +41,20 @@ function safeResolve(file){ // resolves path when require is present or falls ba
  try { // ensures error handling
   if(typeof require==='function' && require.resolve){ // checks for CommonJS require availability
    const resolved = require.resolve(file); // resolves absolute path via Node
-   console.log(`safeResolve is returning ${resolved}`); // logs resolved path
+   console.log(`safeResolve is returning ${resolved}`); // logs resolved path chosen via require.resolve
    return resolved; // returns resolved path when in Node
   }
  } catch(err){
   if(errLog){ errLog(err,'safeResolve failed',{file}); } // structured logging when qerrors present
   else { console.error('safeResolve failed:', err.message); } // fallback replicating old behavior
  } // logs unexpected errors
- const abs = path.resolve(__dirname, file); // absolute fallback ensures bundlers find correct file even without require
- console.log(`safeResolve is returning ${abs}`); // logs absolute fallback path
- return abs; // returns absolute path when require unavailable for browser bundling
+ if(typeof __dirname !== 'undefined'){ // checks if __dirname exists for path resolution
+  const abs = path.resolve(__dirname, file); // uses __dirname when defined for absolute fallback
+  console.log(`safeResolve is returning ${abs}`); // logs absolute fallback path from __dirname
+  return abs; // returns absolute path when require unavailable and __dirname present
+ }
+ console.log(`safeResolve is returning ${file}`); // logs unchanged path when __dirname undefined
+ return file; // returns file unchanged when neither require.resolve nor __dirname available
 }
 
 const qorecss = { // holds public API properties and helpers

@@ -118,4 +118,14 @@ describe('index module', {concurrency:false}, () => {
     assert.doesNotThrow(() => require('../index.js')); // ensures safeResolve handles missing qerrors
     Module.prototype.require = orig; // restore require handler after test
   });
+
+  it('safeResolve falls back to absolute path when require.resolve missing', () => {
+    const idx = require.resolve('../index.js'); // capture module path for reload
+    const old = require.resolve; require.resolve = undefined; // simulate environment lacking require.resolve
+    delete require.cache[idx]; // clear module cache for reload
+    const modNoRes = require(idx); // load module with altered require
+    assert.ok(path.isAbsolute(modNoRes.coreCss)); // expect absolute core path from fallback
+    assert.ok(path.isAbsolute(modNoRes.variablesCss)); // expect absolute variables path from fallback
+    require.resolve = old; // restore original resolve function
+  });
 });

@@ -1,3 +1,12 @@
+/*
+ * SAFERESOLVE ERROR PATH TESTING
+ *
+ * PURPOSE AND RATIONALE:
+ * Ensures that the safeResolve helper within index.js properly throws an
+ * error when both require.resolve and the filesystem fallback fail to locate
+ * the requested file. This guards against silent failures in unusual runtime
+ * environments.
+ */
 require('./helper');
 const assert = require('node:assert');
 const fs = require('node:fs');

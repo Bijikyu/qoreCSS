@@ -1,3 +1,12 @@
+/*
+ * SAFERESOLVE FALLBACK BEHAVIOR TESTING
+ *
+ * PURPOSE AND RATIONALE:
+ * Simulates an environment where require is available but node:path cannot be
+ * loaded. This test ensures safeResolve still returns the provided relative
+ * path rather than throwing, enabling graceful degradation in restricted
+ * runtimes.
+ */
 require('./helper');
 const assert = require('node:assert');
 const {describe,it} = require('node:test');

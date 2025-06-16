@@ -149,7 +149,7 @@ function injectCss(){ // handles runtime stylesheet loading logic
     }catch{return false;} // ignores scripts with bad URLs
    });
   }
-  if(!scriptEl){ scriptEl = document.querySelector('[data-qorecss]'); } // detects custom attribute for flexible inclusion
+  if(!scriptEl){ scriptEl = document.querySelector('script[data-qorecss]'); } // selects only script elements for reliable base path
   const scriptSrc = scriptEl && scriptEl.src ? scriptEl.src : ''; // avoids errors when element or src missing
   let basePath = ''; // default empty base path
   if (scriptSrc) {

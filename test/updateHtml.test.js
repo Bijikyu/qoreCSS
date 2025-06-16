@@ -154,6 +154,15 @@ describe('updateHtml', () => {
     assert.strictEqual(encOpt, 'utf8'); // verify utf8 encoding explicitly passed
     assert.strictEqual(hash, '12345678'); // ensure function still returns correct hash
   });
+
+  it('returns 1 when hash invalid', async () => {
+    fs.writeFileSync(path.join(tmpDir, 'build.hash'), 'invalid'); // writes malformed hash for validation
+    const original = fs.readFileSync(path.join(tmpDir, 'index.html'), 'utf8'); // save initial html for comparison
+    const code = await updateHtml(); // execute update with invalid hash
+    const updated = fs.readFileSync(path.join(tmpDir, 'index.html'), 'utf8'); // read file after attempt
+    assert.strictEqual(code, 1); // function should signal failure via return code
+    assert.strictEqual(updated, original); // html should remain unchanged on invalid hash
+  });
 });
 
 // CLI exit code tests ensure process.exitCode reflects missing build artifacts

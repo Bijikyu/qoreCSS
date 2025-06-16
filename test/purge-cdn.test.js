@@ -179,3 +179,22 @@ describe('run uses hash', {concurrency:false}, () => {
     assert.ok(calledUrl.includes('core.12345678.min.css')); // validates correct hashed filename construction
   });
 });
+
+describe('run invalid hash', {concurrency:false}, () => {
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'purge-')); // create temp dir for invalid hash test
+    fs.writeFileSync(path.join(tmpDir, 'build.hash'), 'invalid'); // write malformed hash
+    process.chdir(tmpDir); // switch to tmp
+    calledUrl = ''; // reset url capture
+    load({fetchRetry: async (url) => { calledUrl = url; return {status:203}; }, fs: fs.promises}); // stub dependencies
+  });
+  afterEach(() => {
+    process.chdir(path.resolve(__dirname, '..')); // restore cwd
+    fs.rmSync(tmpDir, {recursive:true, force:true}); // cleanup temp dir
+  });
+  it('returns code 1 and skips purge', async () => {
+    const code = await run(); // run with invalid hash
+    assert.strictEqual(code, 1); // should return failure code
+    assert.strictEqual(calledUrl, ''); // ensure purgeCdn not called
+  });
+});

@@ -119,6 +119,25 @@ describe('measureUrl invalid count', {concurrency:false}, () => {
   });
 });
 
+
+describe('run with invalid hash', {concurrency:false}, () => {
+  let tmpDir;
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'perf-')); // create temp dir
+    fs.writeFileSync(path.join(tmpDir, 'build.hash'), 'invalid'); // invalid hash value
+    process.chdir(tmpDir); // switch cwd
+    process.argv = ['node','scripts/performance.js','1']; // set args
+  });
+  afterEach(() => {
+    fs.rmSync(tmpDir, {recursive:true, force:true}); // cleanup
+    process.argv = ['node','']; // reset args
+  });
+  it('runs using fallback file name', async () => {
+    const result = await performance.run(); // run should still work
+    assert.strictEqual(typeof result, 'number'); // returns numeric
+  });
+});
+
 describe('CDN_BASE_URL trailing slashes', {concurrency:false}, () => {
   let tmpDir;
   beforeEach(() => {

@@ -101,6 +101,11 @@ async function run(){
    * and purge operations, preventing purging of wrong file versions.
    */
   const hash = (await fs.readFile(`build.hash`, `utf8`)).trim(); // Reads current build hash from filesystem
+  if(!/^[a-f0-9]{8}$/.test(hash)){ // validates hash format to avoid purging wrong file
+   qerrors(new Error('invalid hash'), 'run invalid hash', {hash}); // logs invalid hash with context
+   console.log('run is returning 1'); // communicates failure via return code
+   return 1; // aborts purge when hash malformed
+  }
   
   /*
    * FILENAME CONSTRUCTION

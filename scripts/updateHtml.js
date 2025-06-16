@@ -54,6 +54,11 @@ async function updateHtml(){
   const hashPath = path.join(cwd, 'build.hash'); // computes absolute path using captured cwd
   await fs.access(hashPath); // ensures hash file exists before reading for graceful error handling
   const hash = (await fs.readFile(hashPath,'utf8')).trim(); // Reads current build hash for filename replacement
+  if(!/^[a-f0-9]{8}$/.test(hash)){ // verifies hash format to prevent malformed filenames
+    qerrors(new Error('invalid hash'), 'updateHtml invalid hash', {hash}); // logs invalid hash context for debugging
+    console.log('updateHtml is returning 1'); // communicates early failure code
+    return 1; // aborts update when hash malformed
+  }
   
   /*
    * HTML CONTENT LOADING

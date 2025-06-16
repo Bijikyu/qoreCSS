@@ -275,7 +275,7 @@ describe('HTML update unit tests', {concurrency:false}, () => {
    * compatibility with non-hashed CSS references.
    */
   it('handles qore.css fallback replacement', async () => {
-    fs.writeFileSync(path.join(tmpDir, 'build.hash'), 'wxyz5678'); // creates hash file with known value
+    fs.writeFileSync(path.join(tmpDir, 'build.hash'), 'abcdef12'); // creates valid hex hash for replacement check
     fs.writeFileSync(path.join(tmpDir, 'index.html'), '<link rel="stylesheet" href="qore.css">'); // creates HTML with plain CSS reference
     
     delete require.cache[require.resolve('../scripts/updateHtml')]; // clears module cache for fresh import
@@ -284,8 +284,8 @@ describe('HTML update unit tests', {concurrency:false}, () => {
     const hash = await updateHtml(); // executes HTML update
     const updated = fs.readFileSync(path.join(tmpDir, 'index.html'), 'utf8'); // reads updated HTML
     
-    assert.strictEqual(hash, 'wxyz5678'); // validates returned hash
-    assert.ok(updated.includes('core.wxyz5678.min.css')); // confirms qore.css replacement
+    assert.strictEqual(hash, 'abcdef12'); // validates returned hash
+    assert.ok(updated.includes('core.abcdef12.min.css')); // confirms qore.css replacement
     assert.ok(!updated.includes('href="qore.css"')); // verifies old reference removed
   });
 
@@ -298,7 +298,7 @@ describe('HTML update unit tests', {concurrency:false}, () => {
    * Ensures robust hash extraction from build artifacts.
    */
   it('reads hash file correctly with whitespace handling', async () => {
-    fs.writeFileSync(path.join(tmpDir, 'build.hash'), '  trimtest  \n'); // creates hash file with whitespace
+    fs.writeFileSync(path.join(tmpDir, 'build.hash'), '  fedcba98  \n'); // creates hash file with whitespace around valid hex
     fs.writeFileSync(path.join(tmpDir, 'index.html'), '<link href="core.aaaaaaaa.min.css">'); // creates HTML with placeholder
     
     delete require.cache[require.resolve('../scripts/updateHtml')]; // clears module cache for fresh import
@@ -306,10 +306,10 @@ describe('HTML update unit tests', {concurrency:false}, () => {
     
     const hash = await updateHtml(); // executes HTML update
     
-    assert.strictEqual(hash, 'trimtest'); // validates whitespace trimming
+    assert.strictEqual(hash, 'fedcba98'); // validates whitespace trimming
     
     const updated = fs.readFileSync(path.join(tmpDir, 'index.html'), 'utf8'); // reads updated HTML
-    assert.ok(updated.includes('core.trimtest.min.css')); // confirms trimmed hash usage
+    assert.ok(updated.includes('core.fedcba98.min.css')); // confirms trimmed hash usage
   });
 });
 
@@ -353,7 +353,7 @@ describe('CDN purge unit tests', {concurrency:false}, () => {
    */
   it('constructs filenames from hash correctly', async () => {
     process.env.CODEX = 'True'; // forces offline mode
-    fs.writeFileSync(path.join(tmpDir, 'build.hash'), 'filetest'); // creates hash file with known value
+    fs.writeFileSync(path.join(tmpDir, 'build.hash'), 'deadbeef'); // creates valid hex hash file for purge test
     
     delete require.cache[require.resolve('../scripts/purge-cdn')]; // clears module cache for fresh import
     const {run} = require('../scripts/purge-cdn'); // imports run function via destructuring

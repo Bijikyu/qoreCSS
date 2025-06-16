@@ -31,8 +31,8 @@ const {parseEnvInt} = require('./utils/env-config'); // Centralized environment 
 const socketLimit = parseEnvInt('SOCKET_LIMIT', 50, 1, 1000); // validates range 1-1000 with default 50
 const axiosInstance = axios.create({httpAgent:new http.Agent({keepAlive:true,maxSockets:socketLimit}),httpsAgent:new https.Agent({keepAlive:true,maxSockets:socketLimit})}); // axios instance using variable connection limit
 
-axiosRetry(axiosInstance,{retryDelay:axiosRetry.exponentialDelay}); // configures plugin with exponential backoff
-// delay module removed since axiosRetry handles exponential backoff internally // change rationale comment
+axiosRetry(axiosInstance,{retryDelay:axiosRetry.exponentialDelay,shouldResetTimeout:true}); // configures plugin with exponential backoff and ensures full timeout each retry
+// delay module removed since axiosRetry handles exponential backoff internally
 
 
 /*

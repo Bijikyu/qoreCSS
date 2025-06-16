@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img height='150' width='150' src="qore.png?raw=true" />
+  <img height='150' width='150' src="qore.png?raw=true" alt="qoreCSS logo" /> <!-- alt text helps screen readers describe the logo for accessibility -->
 </p>
 
 # qoreCSS

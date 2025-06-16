@@ -233,4 +233,16 @@ describe('browser injection', {concurrency:false}, () => {
     assert.strictEqual(links.length, 1); // expects only hashed stylesheet to remain
     assert.ok(links[0].href.includes('core.5c7df4d0.min.css')); // verifies hashed stylesheet retained
   });
+
+  it('removes onerror after fallback to prevent loop', () => {
+    require('../index.js'); // triggers injection to create link with handler
+    const link = document.querySelector('link'); // retrieves injected stylesheet link
+    const handle = link.onerror; // stores onerror for manual invocation
+    handle(); // simulate load error to trigger fallback
+    assert.ok(link.href.endsWith('qore.css')); // verifies fallback applied
+    assert.strictEqual(link.onerror, null); // ensures handler removed after invocation
+    link.href = 'again.css'; // resets href to check for loop
+    if(link.onerror){ link.onerror(); } // would re-trigger if handler not removed
+    assert.strictEqual(link.href, 'again.css'); // confirms href unchanged meaning no loop
+  });
 });

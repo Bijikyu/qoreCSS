@@ -1,6 +1,17 @@
+
 // Centralized environment parsing utils for consistent config handling across scripts
 // Supports integer, string, boolean, and URL normalization to avoid duplicate logic
 // Uses `env-var` for robust parsing with defaults when values are missing or invalid
+
+/*
+ * ENVIRONMENT VARIABLE PARSING UTILITIES
+ *
+ * PURPOSE AND RATIONALE:
+ * Centralizes environment variable parsing logic to ensure consistent
+ * handling of configuration across all scripts. Using the env-var module
+ * provides validation helpers while custom wrappers enforce defaults and
+ * range constraints specific to this project.
+ */
 const envVar = require('env-var'); // env-var provides robust env parsing
 
 function parseEnvInt(name, def, min = 1, max = 1000){
@@ -52,4 +63,5 @@ function trimTrailingSlashes(str){
   }
 }
 
+// Export utility functions so other scripts share consistent env parsing logic
 module.exports = {parseEnvInt, parseEnvString, parseEnvBool, trimTrailingSlashes};

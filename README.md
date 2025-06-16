@@ -60,11 +60,30 @@ const cssPath = qorecss.getStylesheet();
 const variablesPath = qorecss.getVariables();
 ```
 
+#### `qorecss` Object Properties
+The module exposes useful metadata for advanced scenarios:
+
+* `coreCss` - Absolute path to `qore.css` for bundlers.
+* `variablesCss` - Absolute path to `variables.css`.
+* `serverSide` - `true` when running under Node.js, otherwise `undefined`.
+
+```javascript
+const {coreCss, variablesCss, serverSide} = require('qorecss');
+console.log(coreCss);     // path to qore.css
+console.log(variablesCss); // path to variables.css
+if(serverSide){
+  console.log('Running on Node.js');
+}
+```
+
 #### Browser Auto-injection
 ```html
 <!-- Automatically injects CSS when script loads -->
-<script src="node_modules/qorecss/index.js"></script>
+<!-- Mark loader when multiple scripts exist -->
+<script data-qorecss src="node_modules/qorecss/index.js"></script>
 ```
+
+Use the `data-qorecss` attribute when your page includes several script tags so the loader can determine its own path.
 
 ## Customization
 

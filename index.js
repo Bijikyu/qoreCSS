@@ -165,11 +165,11 @@ function injectCss(){ // handles runtime stylesheet loading logic
 
   const cssFile = `core.5c7df4d0.min.css`; // placeholder replaced during build
   const links = Array.from(document.head.querySelectorAll('link')); // grabs all current link elements to manage updates
-  const coreRegex = /^core(?:\.[a-f0-9]{8})?\.min\.css$/; // targets only hashed or fallback core filenames for cleanup
+  const coreRegex = /^core(?:\.[a-f0-9]+)?\.min\.css$/; // targets hashed or fallback core filenames for cleanup (flexible hash length)
   links.forEach(l => {
     const href = l.getAttribute('href') || ''; // fetches href attribute for processing
     const file = (href.split('/').pop() || '').split('?')[0].split('#')[0]; // strips query/fragments so regex matches expected filename
-    if(coreRegex.test(file) && !file.includes(cssFile)){ l.remove(); console.log(`injectCss removed outdated ${l.href}`); } // removes hashed links not matching new hash
+    if(coreRegex.test(file) && file !== cssFile){ l.remove(); console.log(`injectCss removed outdated ${l.href}`); } // removes hashed links not matching new hash exactly
   }); // iterates existing links to remove stale hashes
   const freshLinks = Array.from(document.head.querySelectorAll('link')); // re-queries after removals for up-to-date list
   const fallback = freshLinks.find(l => l.href.includes('qore.css')); // locates plain qore.css link for unconditional removal

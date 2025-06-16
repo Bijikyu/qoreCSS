@@ -241,8 +241,9 @@ describe('browser injection', {concurrency:false}, () => {
     handle(); // simulate load error to trigger fallback
     assert.ok(link.href.endsWith('qore.css')); // verifies fallback applied
     assert.strictEqual(link.onerror, null); // ensures handler removed after invocation
-    link.href = 'again.css'; // resets href to check for loop
+    const testHref = 'again.css'; // sets test href value
+    link.href = testHref; // resets href to check for loop
     if(link.onerror){ link.onerror(); } // would re-trigger if handler not removed
-    assert.strictEqual(link.href, 'again.css'); // confirms href unchanged meaning no loop
+    assert.ok(link.href.endsWith('again.css')); // confirms href ends with expected value (may have base path)
   });
 });

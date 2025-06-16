@@ -21,9 +21,10 @@ The framework includes sophisticated performance measurement tools that validate
    # Run with custom request count (1-1000 requests)
    node scripts/performance.js 25
 
-   # Generate JSON output for CI/CD integration
-   node scripts/performance.js 25 --json
-   ```
+    # Generate JSON output for CI/CD integration
+    node scripts/performance.js 25 --json
+    ```
+    Using `--json` appends results to `performance-results.json` for trend analysis. This file is uploaded by `.github/workflows/performance.yml` as an artifact. <!-- clarifies storage of performance history -->
 
 ### Advanced Features
 

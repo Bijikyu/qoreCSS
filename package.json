@@ -43,8 +43,8 @@
     "jsdom": "^22.1.0",
     "postcss": "^8.4.30",
     "postcss-cli": "^10.1.0",
-    "qerrors": "^1.2.3",
-    "qtests": "^1.0.4",
+    "qerrors": "^1.2.4",
+    "qtests": "^1.0.5",
     "stylelint": "^15.10.2",
     "stylelint-config-standard": "^34.0.0"
   },

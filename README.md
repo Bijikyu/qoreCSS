@@ -230,6 +230,7 @@ For self-hosting, see [docs/self-hosting.md](docs/self-hosting.md) for optimal s
 ### CDN Cache Purge
 After deployment run `node scripts/purge-cdn.js` to clear CDN caches so the latest hashed files are served. <!-- instructs users how to clear CDN -->
 You can optionally check CDN performance with `node scripts/performance.js --json` which measures response times and writes `performance-results.json`. <!-- explains json output file for tracking -->
+The file is uploaded by `.github/workflows/performance.yml` as an artifact and automatically trimmed to the most recent 50 entries for convenient tracking.
 
 ## License
 

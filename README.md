@@ -179,11 +179,11 @@ SOCKET_LIMIT=50                        # HTTP connection pool size with lowered 
 
 # Performance Monitoring
 QUEUE_LIMIT=5                          # Number of requests run concurrently in each batch
-CODEX=true                             # Enable offline mode for build and test scripts (skip network requests) <!-- clarifies offline mode extends to build and tests -->
+CODEX=true                             # Enable offline mode for build, test, performance, and purge scripts (skip network requests) <!-- clarifies offline mode extends to build, tests, performance, and purge -->
 ```
 
 `MAX_CONCURRENCY` sets the total number of requests processed, while `QUEUE_LIMIT` controls how many run in parallel at a time.
-`CODEX` enables offline mode for build and test scripts so they run without network access.
+`CODEX` enables offline mode for build, test, performance, and purge scripts so they run without network access.
 
 ## Performance
 
@@ -228,7 +228,7 @@ The project automatically builds and deploys to GitHub Pages on every push to `m
 For self-hosting, see [docs/self-hosting.md](docs/self-hosting.md) for optimal server configuration.
 
 ### CDN Cache Purge
-After deployment run `node scripts/purge-cdn.js` to clear CDN caches so the latest hashed files are served. <!-- instructs users how to clear CDN -->
+After deployment run `node scripts/purge-cdn.js` to clear CDN caches so the latest hashed files are served. <!-- instructs users how to clear CDN --> When offline set `CODEX=true` to simulate the purge.
 You can optionally check CDN performance with `node scripts/performance.js --json` which measures response times and writes `performance-results.json`. <!-- explains json output file for tracking -->
 The file is uploaded by `.github/workflows/performance.yml` as an artifact and automatically trimmed to the most recent 50 entries for convenient tracking.
 

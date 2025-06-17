@@ -32,13 +32,9 @@
     "lint": "stylelint qore.css variables.css",
     "test": "node --test --test-concurrency=1"
   },
-  "dependencies": {
-    "axios": "^1.6.0",
-    "axios-retry": "^3.7.0",
-    "env-var": "^7.3.1"
-  },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
+    "axios": "^1.6.0",
     "cssnano": "^5.1.15",
     "jsdom": "^22.1.0",
     "postcss": "^8.4.30",
@@ -54,4 +50,3 @@
     "not dead"
   ]
 }
-

@@ -33,7 +33,7 @@ A comprehensive, modern CSS framework engineered for rapid web development with 
 ### CDN (Recommended for Production)
 ```html
 <!-- Latest hashed version with optimal caching -->
-<!-- core.[hash].min.css is produced by the build process and the hash changes when qore.css updates -->
+<!-- core.[hash].min.css is produced by the build process and the hash changes when qore.css updates; the hash is an eight-character SHA-1 digest -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Bijikyu/qoreCSS/core.[hash].min.css">
 
 
@@ -151,7 +151,7 @@ with the build output. It also replaces any `{{CDN_BASE_URL}}` tokens with the c
 The build system provides advanced features for production deployment:
 
 - **Automatic minification** with PostCSS and cssnano
-- **Hash-based cache busting** for optimal browser caching
+- **Hash-based cache busting** with eight-character SHA-1 filenames (`core.[hash].min.css`) for optimal browser caching
 - **Gzip and Brotli compression** for reduced file sizes
 - **CDN integration** with automatic cache purging
 - **Performance monitoring** with timing measurements
